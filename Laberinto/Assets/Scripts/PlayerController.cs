@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
     public float rotationSpeed = 450;
     public float walkSpeed = 5;
     public float runSpeed = 40;
+    public Gun gun; 
     Rigidbody rb;
     private CharacterController controller;
     private Quaternion targetRotation;
@@ -21,8 +22,14 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
         ControlMouse();
         //ControlWASD();
+        if (Input.GetButtonDown("Shoot")) 
+        {
+            gun.Shoot();
+        }
+        else if (Input.GetButton("Shoot")) 
+            gun.ShootContinuous();
 
-	}
+    }
 
     void ControlMouse()
     {
