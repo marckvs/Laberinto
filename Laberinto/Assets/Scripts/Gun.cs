@@ -13,6 +13,8 @@ public class Gun : MonoBehaviour
     public float rpm;
 
     public Transform spawn;
+    public Transform shellEjecutionPoint;
+    public Rigidbody shell;
     public AudioSource audio;
     private LineRenderer tracer;
 
@@ -41,7 +43,7 @@ public class Gun : MonoBehaviour
             }
 
             nextPossibleShootTime = Time.time + secondsBetweenShots;
-            Debug.DrawRay(ray.origin, ray.direction * shotDistance, Color.green, 1);
+            //Debug.DrawRay(ray.origin, ray.direction * shotDistance, Color.green, 1);
 
             audio.Play();
             
@@ -49,6 +51,9 @@ public class Gun : MonoBehaviour
             {
                 StartCoroutine("RenderTracer", ray.direction * shotDistance);
             }
+
+            Rigidbody newShell = Instantiate(shell, shellEjecutionPoint.position, Quaternion.identity) as Rigidbody;
+            newShell.AddForce(shellEjecutionPoint.forward * Random.Range(150f, 200f) + spawn.forward * Random.Range(-10f, 10f));
         }
     }
 
@@ -70,11 +75,11 @@ public class Gun : MonoBehaviour
         return canShoot;
     }
 
-    IEnumerator RenderTracer()
+    IEnumerator RenderTracer(Vector3 hitPoint)
     {
         tracer.enabled = true;
         tracer.SetPosition(0, spawn.position);
-        tracer.SetPosition(1, spawn.position + );
+        tracer.SetPosition(1, spawn.position + hitPoint);
         yield return null;
         tracer.enabled = false;
         
