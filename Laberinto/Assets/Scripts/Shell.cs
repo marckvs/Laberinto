@@ -4,9 +4,9 @@ using System.Collections;
 public class Shell : MonoBehaviour
 {
 
-    private float lifeTime = 5;
+    private float lifeTime = 2;
+    private Rigidbody rb;
 
-    public Rigidbody rigidbody;
     public Material mat;
     private Color originalCol;
     private float fadePercent;
@@ -16,21 +16,22 @@ public class Shell : MonoBehaviour
     void Start()
     {
         deathTime = Time.time + lifeTime;
-        originalCol = mat.color;
+        //originalCol = mat.color;
         StartCoroutine("Fade");
+        rb = GetComponent<Rigidbody>();
     }
 
     IEnumerator Fade()
     {
         while (true)
         {
-            yield return new WaitForSeconds(.2f);
+            yield return new WaitForSeconds(.1f);
 
             if (fading)
             {
                 fadePercent += Time.deltaTime;
-                mat.color = Color.Lerp(originalCol, Color.clear, fadePercent);
-
+                //mat.color = Color.Lerp(originalCol, Color.clear, fadePercent);
+                    
                 if (fadePercent >= 1)
                 {
                     Destroy(gameObject);
@@ -50,7 +51,7 @@ public class Shell : MonoBehaviour
     {
         if (c.tag == "Ground")
         {
-            rigidbody.Sleep();
+            rb.Sleep();
         }
     }
 }

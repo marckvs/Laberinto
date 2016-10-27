@@ -11,11 +11,15 @@ public class Gun : MonoBehaviour
     }
     public GunType gunType;
     public float rpm;
+    public float gunID;
+    public float damage = 1f;
 
     public Transform spawn;
     public Transform shellEjecutionPoint;
     public Rigidbody shell;
-    public AudioSource audio;
+    public AudioSource aud;
+    public LayerMask collisionMask;
+
     private LineRenderer tracer;
 
     private float secondsBetweenShots;
@@ -37,23 +41,28 @@ public class Gun : MonoBehaviour
             Ray ray = new Ray(spawn.position, spawn.forward);
             RaycastHit hit;
             float shotDistance = 20;
-            if (Physics.Raycast(ray, out hit, shotDistance))
+
+            if (Physics.Raycast(ray, out hit, shotDistance, collisionMask))
             {
                 shotDistance = hit.distance;
+                if (hit.collider.GetComponent<Entity>())
+                {
+                    hit.collider.GetComponent<Entity>().TakeDamage(damage);
+                }
             }
 
             nextPossibleShootTime = Time.time + secondsBetweenShots;
             //Debug.DrawRay(ray.origin, ray.direction * shotDistance, Color.green, 1);
 
-            audio.Play();
+            aud.Play();
             
             if (tracer)
             {
                 StartCoroutine("RenderTracer", ray.direction * shotDistance);
             }
 
-            Rigidbody newShell = Instantiate(shell, shellEjecutionPoint.position, Quaternion.identity) as Rigidbody;
-            newShell.AddForce(shellEjecutionPoint.forward * Random.Range(150f, 200f) + spawn.forward * Random.Range(-10f, 10f));
+            Rigidbody newShell = Instantiate(shell, shellEjecutionPoint.position, shellEjecutionPoint.rotation) as Rigidbody;
+            newShell.AddForce(shellEjecutionPoint.right * Random.Range(180, 200) + spawn.forward * Random.Range(-100, 100f));
         }
     }
 
